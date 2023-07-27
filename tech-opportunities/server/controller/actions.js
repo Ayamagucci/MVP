@@ -1,4 +1,6 @@
+const { API_URL, API_ID, API_KEY } = process.env;
 const { User, Job } = require('../../db/models');
+const axios = require('axios');
 
 module.exports = {
   searchJobs: async(req, res) => {
@@ -6,7 +8,9 @@ module.exports = {
       const { title, location, keywords } = req.query;
 
       // build search query based on user input
-      const where = {};
+      const queryParams = new URLSearchParams({
+        app_id: API_ID,
+      })
 
       if (title) {
         where.title = { [ Op.iLike ]: `%${ title }%` };
