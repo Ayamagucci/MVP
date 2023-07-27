@@ -1,41 +1,27 @@
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 
 const { PORT, API_ID, API_KEY } = process.env;
 const app = express();
 
 const db = require('../db/index');
+const controller = require('./controller/actions');
+
 const path = require('path');
 const morgan = require('morgan');
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, '../dist')));
 
-const { Schema, model } = require('mongoose');
-
-const jobSchema = new Schema({
-  title: { type: String, required: true },
-  company: { type: String, required: true },
-  location: { type: String, required: true },
-  type: String,
-  app_process: String
-});
-
-const userSchema = new Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true },
-  location: String,
-  education: { type: String, default: 'High School' }
-});
-
-const Job = model('Job', jobSchema);
-
-// module.exports = Job;
+app.get('/api/jobs/search', controller.searchJobs);
+app.post('/api/jobs/save', controller.saveJob);
+app.get('/api/jobs/saved/:userId', controller.getSavedJobs);
+app.delete('/api/jobs/saved/:userId/:jobId', controller.deleteSavedJob);
 
 /*
 app.get('/api/jobs', async(req, res) => {
