@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Select, FormControl, MenuItem } from '@mui/material';
 
-const CountSetter = ({ count, setCount }) => {
+const CountSetter = ({ count, setCount, changeCount }) => {
 
   const maxCountOptions = [ 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 ];
 
@@ -11,7 +11,7 @@ const CountSetter = ({ count, setCount }) => {
         <Select
           label="Count"
           value={ count }
-          onChange={ (e) => setCount(e.target.value) }
+          onChange={ changeCount }
         >
           { maxCountOptions.map((maxCount) => (
             <MenuItem key={ maxCount } value={ maxCount }>

@@ -26,7 +26,7 @@ const Search = ({
 
       <Grid item xs={ 12 } sm={ 6 }>
         <TextField
-          label="City"
+          label="Zip Code"
           value={ location }
           onChange={ (e) => setLocation(e.target.value) }
           variant="outlined"

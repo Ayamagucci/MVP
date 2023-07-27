@@ -1,21 +1,40 @@
-const { Schema, model } = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('./index');
 
-const jobSchema = new Schema({
-  title: { type: String,  },
-  company: String,
-  location: String,
-  type: String,
-  app_process: String
+const User = sequelize.define('User', {
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
 });
 
-const userSchema = new Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true },
-  location: String,
-  education: { type: String, default: 'High School' }
+const Job = sequelize.define('Job', {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  company: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  type: DataTypes.STRING,
+  app_process: DataTypes.STRING
 });
 
-const Job = model('Job', jobSchema);
+// User —> save multiple jobs
+User.hasMany(Job, { onDelete: 'CASCADE' });
+Job.belongsTo(User);
 
-// module.exports = Job;
+module.exports = { User, Job };

@@ -1,16 +1,23 @@
 require('dotenv').config();
-const { DB_PORT, DB_NAME } = process.env;
-const mongoose = require('mongoose');
+const { DB_NAME, DB_HOST, DB_USER, DB_PW } = process.env;
+const { Sequelize, DataTypes } = require('sequelize');
+
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PW,
+{
+  host: DB_HOST,
+  dialect: 'postgres',
+  define: { timestamps: false }
+});
 
 (async() => {
   try {
-    await mongoose.connect(`mongodb://localhost:${ DB_PORT }/${ DB_NAME }`);
-    console.log(`Connected to DB: ${ DB_NAME }`);
+    // create tables (sync models)
+    await sequelize.sync();
+    console.log(`User "${ DB_USER }" connected to DB: ${ DB_NAME }`);
 
   } catch(err) {
     console.error(`Error connecting to DB: ${ err }`);
   }
 })();
 
-// export connection
-exports = mongoose.connection;
+module.exports = sequelize;

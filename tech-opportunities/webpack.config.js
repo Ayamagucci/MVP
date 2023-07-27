@@ -2,7 +2,6 @@ require('dotenv').config();
 const { MODE, PORT, API_URL, API_ID, API_KEY } = process.env;
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { DefinePlugin } = require('webpack');
 
 module.exports = {
@@ -30,13 +29,14 @@ module.exports = {
     ]
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
       template: './client/index.html',
       filename: 'index.html'
     }),
+    // defines global constants that can be used during build process
     new DefinePlugin({
       'process.env': {
+        PORT: JSON.stringify(PORT),
         API_URL: JSON.stringify(API_URL),
         API_ID: JSON.stringify(API_ID),
         API_KEY: JSON.stringify(API_KEY),
