@@ -1,5 +1,4 @@
 const { API_URL, API_ID, API_KEY } = process.env;
-const { Op } = require('sequelize');
 const { User, Job } = require('../../db/models');
 const axios = require('axios');
 
@@ -8,7 +7,10 @@ module.exports = {
     try {
       const { title, location, keywords } = req.query;
 
-      const where = {};
+      // build search query based on user input
+      const queryParams = new URLSearchParams({
+        app_id: API_ID,
+      })
 
       if (title) {
         where.title = { [ Op.iLike ]: `%${ title }%` };
@@ -19,7 +21,7 @@ module.exports = {
       if (keywords) {
         where[ Op.or ] = [
           { title: { [ Op.iLike ]: `%${ keywords }%` } },
-          { company: { [ Op.iLike ]: `%${ keywords }%` } }
+          { company: { [ Op.iLike ]: `%${ keywords }%` } },
         ];
       }
 
@@ -27,7 +29,7 @@ module.exports = {
       const jobs = await Job.findAll({ where });
       res.status(200).json(jobs);
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).json({ error: `Could not perform job search: ${ err.message }` });
     }
   },
@@ -37,19 +39,19 @@ module.exports = {
       const { userId, jobData } = req.body;
 
       // find user in DB
-      const user = await User.findOne({ where: { uuid: userId } });
+      const user = await User.findByPk(userId);
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: `User not found` });
       }
 
       // create & save job
       const savedJob = await Job.create(jobData);
       await user.addJob(savedJob);
 
-      res.status(201).json({ message: 'Job saved successfully' });
+      res.status(201).json({ message: `Job saved successfully` });
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).json({ error: `Error saving job: ${ err.message }` });
     }
   },
@@ -59,18 +61,15 @@ module.exports = {
       const { userId } = req.params;
 
       // find by ID & include saved jobs data
-      const user = await User.findOne({
-        where: { uuid: userId },
-        include: Job
-      });
+      const user = await User.findByPk(userId, { include: Job });
 
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: `User not found` });
       }
 
       res.status(200).json({ savedJobs: user.Jobs });
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).json({ error: `Error fetching saved jobs: ${ err.message }` });
     }
   },
@@ -80,18 +79,18 @@ module.exports = {
       const { jobId, userId } = req.params;
 
       // find by ID
-      const user = await User.findOne({ where: { uuid: userId }});
+      const user = await User.findByPk(userId);
 
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: `User not found` });
       }
 
       // remove job w/ specified ID
       await user.removeJob(jobId);
 
-      res.status(200).json({ message: 'Job removed from saved list' });
+      res.status(200).json({ message: `Job removed from saved list` });
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).json({ error: `Error deleting saved job: ${ err.message }` });
     }
   }
