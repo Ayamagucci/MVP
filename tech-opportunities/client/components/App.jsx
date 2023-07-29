@@ -10,21 +10,23 @@ import Switcher from './Switcher';
 
 const App = () => {
 
-  const [ jobs, setJobs ] = useState([]);
-  const [ jobsDisplayed, setJobsDisplayed ] = useState('all');
+  const [ allJobs, setAllJobs ] = useState([]);
+  const [ savedJobs, setSavedJobs ] = useState([]);
+
+  const [ jobsToDisplay, setJobsToDisplay ] = useState('all');
+  const [ jobsDisplayed, setJobsDisplayed ] = useState(allJobs);
 
   const [ page, setPage ] = useState(1);
-  const [ count, setCount ] = useState(10);
+  const [ count, setCount ] = useState(25);
 
   const [ title, setTitle ] = useState('');
-  const [ location, setLocation ] = useState('');
+  // const [ location, setLocation ] = useState('');
   const [ keywords, setKeywords ] = useState('');
 
   // SAVED JOBS
   const [ userId, setUserId ] = useState(
     (localStorage.getItem('id') || '')
   );
-  const [ savedJobs, setSavedJobs ] = useState([]);
 
   useEffect(() => {
     const getUserId = () => {
@@ -51,11 +53,12 @@ const App = () => {
       }
     };
 
+    fetchAllJobs();
     fetchSavedJobs();
 
-  }, [ count, page ]);
+  }, [ count, page, userId, jobsToDisplay ]);
 
-  const handleSearch = async() => {
+  const fetchAllJobs = async() => {
     try {
       const queryParams = new URLSearchParams({
         app_id: API_ID,
@@ -90,9 +93,11 @@ const App = () => {
         queryParams.append('what', whatParam);
       }
 
+      /*
       if (location) {
         queryParams.append('location', location);
       }
+      */
 
       queryParams.append('content-type', 'application/json');
 
@@ -102,26 +107,25 @@ const App = () => {
         params: queryParams,
       });
 
-      setJobs(query.data.results);
+      setAllJobs(query.data.results);
       console.dir(query.data.results)
 
-      setTitle('');
-      setLocation('');
-      setKeywords('');
-
     } catch(err) {
-      console.error(`Error fetching jobs: ${ err }`);
+      console.error(`Error fetching all jobs: ${ err }`);
     }
   };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      await handleSearch();
+      await fetchAllJobs();
 
     } catch(err) {
       console.error(`Error submitting user input: ${ err }`);
     }
+    setTitle('');
+    // setLocation('');
+    setKeywords('');
   };
 
   const [ startIndex, setStartIndex ] = useState(0);
@@ -181,37 +185,36 @@ const App = () => {
       <Search
         title={ title }
         setTitle={ setTitle }
-        location={ location }
-        setLocation={ setLocation }
+        // location={ location }
+        // setLocation={ setLocation }
         keywords={ keywords }
         setKeywords={ setKeywords }
-        handleSearch={ handleSearch }
         handleSubmit={ handleSubmit }
       />
 
-      <Nav
+      {/* <Nav
         page={ page }
         count={ count }
-        jobs={ jobs }
+        jobsDisplayed={ jobsDisplayed }
         handlePageChange={ handlePageChange }
-      />
+      /> */}
 
       <Switcher
-        jobsDisplayed={ jobsDisplayed }
-        setJobsDisplayed={ setJobsDisplayed }
+        jobsToDisplay={ jobsToDisplay }
+        setJobsToDisplay={ setJobsToDisplay }
       />
 
       <JobsList
-        jobs={ jobs }
+        jobsDisplayed={ (jobsToDisplay === 'all') ? (allJobs) : (savedJobs) }
         userId={ userId }
         setSavedJobs={ setSavedJobs }
       />
 
-      <CountSetter
+      {/* <CountSetter
         count={ count }
         setCount={ setCount }
         changeCount={ changeCount }
-      />
+      /> */}
     </Box>
   );
 };

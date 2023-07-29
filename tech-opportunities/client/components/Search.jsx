@@ -4,11 +4,10 @@ import { TextField, Button, Grid } from '@mui/material';
 const Search = ({
   title,
   setTitle,
-  location,
-  setLocation,
+  // location,
+  // setLocation,
   keywords,
   setKeywords,
-  handleSearch,
   handleSubmit
 }) => (
 
@@ -24,17 +23,18 @@ const Search = ({
         />
       </Grid>
 
-      <Grid item xs={ 12 } sm={ 6 }>
+      {/* <Grid item xs={ 12 } sm={ 6 }>
         <TextField
           label="Zip Code"
           value={ location }
           onChange={ (e) => setLocation(e.target.value) }
           variant="outlined"
           fullWidth
+          disabled // something wrong internally w/ API (calls via Postman rejected, as well as on their site)
         />
-      </Grid>
+      </Grid> */}
 
-      <Grid item xs={ 12 }>
+      <Grid item xs={ 12 } sm={6}>
         <TextField
           label="Keywords"
           value={ keywords }

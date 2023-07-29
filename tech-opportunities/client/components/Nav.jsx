@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import JobsList from './JobsList';
 
-const Nav = ({ handlePageChange, page, count, jobs }) => {
+const Nav = ({ handlePageChange, page, count, jobsDisplayed }) => {
 
   // calc totalPages based on totalCount & items per page (count)
-  const totalPages = Math.ceil(jobs?.length / count);
+  const totalPages = Math.ceil(jobsDisplayed?.length / count);
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 10 }}>

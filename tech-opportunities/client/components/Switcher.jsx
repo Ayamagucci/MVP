@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { FormControl, Select, MenuItem } from '@mui/material';
+import { Box, FormControl, Select, MenuItem } from '@mui/material';
 
-const Switcher = ({ jobsDisplayed, setJobsDisplayed }) => {
-  // const [ option, setOption ] = useState('all');
+const Switcher = ({ jobsToDisplay, setJobsToDisplay }) => (
 
-  return (
+  <Box display="flex" justifyContent="center">
     <FormControl>
       <Select
-        // label="selectJobsDisplayed"
-        value={ jobsDisplayed }
-        onChange={ (e) => setJobsDisplayed(e.target.value) }
+        value={ jobsToDisplay }
+        onChange={ (e) => setJobsToDisplay(e.target.value) }
       >
         <MenuItem key="all" value="all">
           All
@@ -19,7 +17,7 @@ const Switcher = ({ jobsDisplayed, setJobsDisplayed }) => {
         </MenuItem>
       </Select>
     </FormControl>
-  );
-};
+  </Box>
+);
 
 export default Switcher;

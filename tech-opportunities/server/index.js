@@ -14,8 +14,8 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, '../dist')));
 
-app.get('/api/jobs/search', searchJobs);
 app.post('/api/jobs/save', saveJob);
+app.get('/api/jobs/search/:userId', searchJobs);
 app.get('/api/jobs/saved/:userId', getSavedJobs);
 app.delete('/api/jobs/saved/:userId/:jobId', deleteSavedJob);
 

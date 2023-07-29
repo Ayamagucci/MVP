@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography } from '@mui/material';
 import Job from './Job';
 
-const JobsList = ({ jobs, userId, setSavedJobs }) => (
+const JobsList = ({ jobsDisplayed, userId, setSavedJobs }) => (
 
   <Container maxWidth="md" sx={{ mt: 5 }}>
     <Typography
@@ -15,25 +15,28 @@ const JobsList = ({ jobs, userId, setSavedJobs }) => (
       Job Opportunities
     </Typography>
 
-    { jobs?.length > 0 ? (
-      jobs.map(({ id, title, company, location, description, salary_min, salary_max }) => (
-        <Job key={ id }
-          title={ title }
-          company={ company?.display_name }
-          location={ location?.display_name }
-          description={ description }
-          salary_min={ salary_min }
-          salary_max={ salary_max }
-          userId={ userId }
-          setSavedJobs={ setSavedJobs }
-        />
-      ))
-    ) : (
-      <Typography variant="subtitle1" color="textSecondary" align="center">
-        Sorry, no jobs found.
-        But things will get better — keep grinding, friend.
-      </Typography>
-    ) }
+    { (jobsDisplayed?.length === 0)
+      ? (
+        <Typography variant="subtitle1" color="textSecondary" align="center">
+          Sorry, no jobs found.
+          But things will get better — keep grinding, friend.
+        </Typography>
+      ) : (
+        jobsDisplayed?.map(({ id, title, company, location, description, salary_min, salary_max }) => (
+          <Job key={ id }
+            id={ id }
+            title={ title }
+            company={ company?.display_name }
+            location={ location?.display_name }
+            description={ description }
+            salary_min={ salary_min }
+            salary_max={ salary_max }
+            userId={ userId }
+            setSavedJobs={ setSavedJobs }
+          />
+        ))
+      )
+    }
   </Container>
 );
 
