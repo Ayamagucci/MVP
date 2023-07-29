@@ -9,7 +9,7 @@ const Job = ({ id, title, company, location, description, salary_min, salary_max
     try {
       await axios.post('/api/jobs/save', { userId, jobData });
 
-      console.log('Jobs saved successfully!');
+      console.dir(jobData);
 
       const query = await axios.get(`/api/jobs/saved/${ userId }`);
       setSavedJobs(query.data.savedJobs);

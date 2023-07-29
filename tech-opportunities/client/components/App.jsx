@@ -101,11 +101,9 @@ const App = () => {
         baseURL: 'https://api.adzuna.com/v1/api/jobs/us/search/1',
         params: queryParams,
       });
-      setJobs(query.data.results);
 
-      console.log(
-        `JOBS (Client): ${ JSON.stringify(query.data.results) }`
-      );
+      setJobs(query.data.results);
+      console.dir(query.data.results)
 
       setTitle('');
       setLocation('');
