@@ -53,9 +53,9 @@ const App = () => {
 
     fetchSavedJobs();
 
-  }, []);
+  }, [ count, page ]);
 
-  const handleSearch = async () => {
+  const handleSearch = async() => {
     try {
       const queryParams = new URLSearchParams({
         app_id: API_ID,
