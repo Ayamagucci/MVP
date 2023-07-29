@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const Job = ({ id, title, company, location, description, salary_min, salary_max, userId }) => {
+const Job = ({ id, title, company, location, description, salary_min, salary_max, userId, setSavedJobs }) => {
 
   const handleSave = async(jobData) => {
     try {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography } from '@mui/material';
 import Job from './Job';
 
-const JobsList = ({ jobs, userId }) => (
+const JobsList = ({ jobs, userId, setSavedJobs }) => (
 
   <Container maxWidth="md" sx={{ mt: 5 }}>
     <Typography
@@ -25,6 +25,7 @@ const JobsList = ({ jobs, userId }) => (
           salary_min={ salary_min }
           salary_max={ salary_max }
           userId={ userId }
+          setSavedJobs={ setSavedJobs }
         />
       ))
     ) : (

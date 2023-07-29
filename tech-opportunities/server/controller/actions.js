@@ -36,8 +36,11 @@ module.exports = {
     try {
       const { userId, jobData } = req.body;
 
+      // const stringId = (typeof userId === 'string') ? (userId) : (String(userId));
+
       // find user in DB
       const user = await User.findOne({ where: { uuid: userId } });
+      // const user = await User.findOne({ where: { uuid: stringId } });
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });

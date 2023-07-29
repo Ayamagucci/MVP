@@ -31,7 +31,7 @@ const App = () => {
       let id = localStorage.getItem('id');
 
       if (!id) {
-        id = window.crypto.randomUUID;
+        id = String(window.crypto.randomUUID());
         localStorage.setItem('id', id);
       }
 
@@ -203,7 +203,11 @@ const App = () => {
         setJobsDisplayed={ setJobsDisplayed }
       />
 
-      <JobsList jobs={ jobs } userId={ userId } />
+      <JobsList
+        jobs={ jobs }
+        userId={ userId }
+        setSavedJobs={ setSavedJobs }
+      />
 
       <CountSetter
         count={ count }
