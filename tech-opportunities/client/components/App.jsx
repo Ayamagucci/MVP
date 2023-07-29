@@ -10,10 +10,8 @@ import CountSetter from './CountSetter';
 const App = () => {
 
   const [ jobs, setJobs ] = useState([]);
-
   const [ page, setPage ] = useState(1);
   const [ count, setCount ] = useState(10);
-
   const [ title, setTitle ] = useState('');
   const [ location, setLocation ] = useState('');
   const [ keywords, setKeywords ] = useState('');
@@ -23,8 +21,7 @@ const App = () => {
       const queryParams = new URLSearchParams({
         app_id: API_ID,
         app_key: API_KEY,
-        results_per_page: count,
-        page: page
+        results_per_page: count
       });
 
       const constructWhat = (jobTitle, searchTerms) => {
@@ -57,23 +54,22 @@ const App = () => {
       if (location) {
         queryParams.append('location', location);
       }
-
       queryParams.append('content-type', 'application/json');
 
-      const queryRes = await axios({
+      const query = await axios({
         method: 'get',
         baseURL: `https://api.adzuna.com/v1/api/jobs/us/search`,
         params: queryParams,
       });
-      setJobs(queryRes.data.results);
+      setJobs(query.data.results);
 
-      console.log(`JOBS (client): ${JSON.stringify(queryRes.data.results)}`);
+      console.log(`JOBS (client): ${JSON.stringify(query.data.results)}`);
 
       setTitle('');
       setLocation('');
       setKeywords('');
 
-    } catch (err) {
+    } catch(err) {
       console.error(`Error fetching jobs: ${err}`);
     }
   };
@@ -183,6 +179,7 @@ const App = () => {
 
   useEffect(() => {
     fetchGeolocation();
+    console.log(`geolocation: ${geolocation}`);
 
     if (geolocation) {
       handleSearch();

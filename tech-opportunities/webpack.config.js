@@ -37,7 +37,7 @@ module.exports = {
     new DefinePlugin({
       'process.env': {
         PORT: JSON.stringify(PORT),
-        API_URL: JSON.stringify(API_URL),
+        // API_URL: JSON.stringify(API_URL),
         API_ID: JSON.stringify(API_ID),
         API_KEY: JSON.stringify(API_KEY),
       }
