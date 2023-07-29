@@ -6,15 +6,54 @@ import Search from './Search';
 import JobsList from './JobsList';
 import Nav from './Nav';
 import CountSetter from './CountSetter';
+import Switcher from './Switcher';
 
 const App = () => {
 
   const [ jobs, setJobs ] = useState([]);
+  const [ jobsDisplayed, setJobsDisplayed ] = useState('all');
+
   const [ page, setPage ] = useState(1);
   const [ count, setCount ] = useState(10);
+
   const [ title, setTitle ] = useState('');
   const [ location, setLocation ] = useState('');
   const [ keywords, setKeywords ] = useState('');
+
+  // SAVED JOBS
+  const [ userId, setUserId ] = useState(
+    (localStorage.getItem('id') || '')
+  );
+  const [ savedJobs, setSavedJobs ] = useState([]);
+
+  useEffect(() => {
+    const getUserId = () => {
+      let id = localStorage.getItem('id');
+
+      if (!id) {
+        id = window.crypto.randomUUID;
+        localStorage.setItem('id', id);
+      }
+
+      return id;
+    };
+
+    const cookieId = getUserId();
+    setUserId(cookieId);
+
+    const fetchSavedJobs = async() => {
+      try {
+        const query = await axios.get(`/api/jobs/saved/${ userId }`);
+        setSavedJobs(query.data.savedJobs);
+
+      } catch(err) {
+        console.error(`Error fetching saved jobs: ${ err.message }`);
+      }
+    };
+
+    fetchSavedJobs();
+
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -54,23 +93,26 @@ const App = () => {
       if (location) {
         queryParams.append('location', location);
       }
+
       queryParams.append('content-type', 'application/json');
 
       const query = await axios({
         method: 'get',
-        baseURL: `https://api.adzuna.com/v1/api/jobs/us/search`,
+        baseURL: 'https://api.adzuna.com/v1/api/jobs/us/search/1',
         params: queryParams,
       });
       setJobs(query.data.results);
 
-      console.log(`JOBS (client): ${JSON.stringify(query.data.results)}`);
+      console.log(
+        `JOBS (Client): ${ JSON.stringify(query.data.results) }`
+      );
 
       setTitle('');
       setLocation('');
       setKeywords('');
 
     } catch(err) {
-      console.error(`Error fetching jobs: ${err}`);
+      console.error(`Error fetching jobs: ${ err }`);
     }
   };
 
@@ -136,57 +178,6 @@ const App = () => {
     }
   };
 
-  /*
-  const locateUser = () => {
-    const { geolocation } = navigator;
-
-    if (geolocation) {
-      geolocation.getCurrentPosition(
-        async(position) => {
-          const { latitude, longitude } = position.coords;
-
-          try {
-            const locationRes = await axios.get(
-              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${ latitude }&longitude=${ longitude }&localityLanguage=en`
-            );
-
-            const { city, postalCode } = locationRes.data;
-            console.log(`LOCATION: ${ JSON.stringify(locationRes.data) }`);
-
-            setLocation(postalCode);
-            handleSearch();
-
-          } catch (err) {
-            console.error(`Error fetching location: ${err}`);
-          }
-        }
-      );
-    }
-  };
-
-  useEffect(() => {
-    (async() => {
-      try {
-        await locateUser();
-        await handleSearch();
-
-      } catch(err) {
-        console.log(`Error fetching on load: ${ err }`);
-      }
-    })();
-  }, []);
-  */
-
-  useEffect(() => {
-    fetchGeolocation();
-    console.log(`geolocation: ${geolocation}`);
-
-    if (geolocation) {
-      handleSearch();
-    }
-
-  }, [ geolocation ]);
-
   return (
     <Box sx={{ mt: 2 }}>
       <Search
@@ -207,7 +198,12 @@ const App = () => {
         handlePageChange={ handlePageChange }
       />
 
-      <JobsList jobs={ jobs } />
+      <Switcher
+        jobsDisplayed={ jobsDisplayed }
+        setJobsDisplayed={ setJobsDisplayed }
+      />
+
+      <JobsList jobs={ jobs } userId={ userId } />
 
       <CountSetter
         count={ count }

@@ -1,16 +1,12 @@
 require('dotenv').config();
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-
 const { PORT, API_ID, API_KEY } = process.env;
-const app = express();
-
 const db = require('../db/index');
 const { searchJobs, saveJob, getSavedJobs, deleteSavedJob } = require('./controller/actions');
-
+const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
+const express = require('express');
+const app = express();
 
 app.use(express.json());
 app.use(cors());
